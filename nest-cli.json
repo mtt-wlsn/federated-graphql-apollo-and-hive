@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/order-api/src",
+  "monorepo": true,
+  "root": "apps/order-api",
+  "compilerOptions": {
+    "webpack": true,
+    "tsConfigPath": "apps/order-api/tsconfig.app.json"
+  },
+  "projects": {
+    "order-api": {
+      "type": "application",
+      "root": "apps/order-api",
+      "entryFile": "main",
+      "sourceRoot": "apps/order-api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/order-api/tsconfig.app.json"
+      }
+    },
+    "catalog-api": {
+      "type": "application",
+      "root": "apps/catalog-api",
+      "entryFile": "main",
+      "sourceRoot": "apps/catalog-api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/catalog-api/tsconfig.app.json"
+      }
+    },
+    "shopper-api": {
+      "type": "application",
+      "root": "apps/shopper-api",
+      "entryFile": "main",
+      "sourceRoot": "apps/shopper-api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/shopper-api/tsconfig.app.json"
+      }
+    },
+    "gateway-api": {
+      "type": "application",
+      "root": "apps/gateway-api",
+      "entryFile": "main",
+      "sourceRoot": "apps/gateway-api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/gateway-api/tsconfig.app.json"
+      }
+    },
+    "tracing": {
+      "type": "library",
+      "root": "libs/tracing",
+      "entryFile": "index",
+      "sourceRoot": "libs/tracing/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/tracing/tsconfig.lib.json"
+      }
+    }
+  }
+}
