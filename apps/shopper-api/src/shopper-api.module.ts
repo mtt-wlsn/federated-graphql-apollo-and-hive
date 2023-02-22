@@ -19,7 +19,10 @@ import { ConfigModule } from '@nestjs/config';
   imports: [
     ConfigModule.forRoot(),
     GraphQLModule.forRoot<ApolloFederationDriverConfig>({
-      autoSchemaFile: 'shopper-api-schema.gql',
+      autoSchemaFile: {
+        federation: 2,
+        path: 'shopper-api-schema.gql',
+      },
       buildSchemaOptions: {
         orphanedTypes: [Order],
       },

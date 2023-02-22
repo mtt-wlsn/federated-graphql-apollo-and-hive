@@ -17,7 +17,10 @@ import { DataloaderModule } from './dataloader/dataloader.module';
   imports: [
     ConfigModule.forRoot(),
     GraphQLModule.forRoot<ApolloFederationDriverConfig>({
-      autoSchemaFile: 'catalog-api-schema.gql',
+      autoSchemaFile: {
+        federation: 2,
+        path: 'catalog-api-schema.gql',
+      },
       buildSchemaOptions: {
         orphanedTypes: [Order],
       },

@@ -14,7 +14,10 @@ import { ConfigModule } from '@nestjs/config';
   imports: [
     ConfigModule.forRoot(),
     GraphQLModule.forRoot<ApolloFederationDriverConfig>({
-      autoSchemaFile: 'order-api-schema.gql',
+      autoSchemaFile: {
+        federation: 2,
+        path: 'order-api-schema.gql',
+      },
       transformSchema: (schema) => {
         writeFileSync('order-api-schema.gql', printSubgraphSchema(schema));
         return schema;
