@@ -36,15 +36,6 @@
         "tsConfigPath": "apps/shopper-api/tsconfig.app.json"
       }
     },
-    "gateway-api": {
-      "type": "application",
-      "root": "apps/gateway-api",
-      "entryFile": "main",
-      "sourceRoot": "apps/gateway-api/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/gateway-api/tsconfig.app.json"
-      }
-    },
     "tracing": {
       "type": "library",
       "root": "libs/tracing",

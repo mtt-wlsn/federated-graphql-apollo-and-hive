@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "prebuild": "rimraf dist",
-    "build:all": "nest build order-api && nest build catalog-api && nest build shopper-api && nest build gateway-api",
+    "build:all": "nest build order-api && nest build catalog-api && nest build shopper-api",
     "build:order-api": "nest build order-api",
     "start:order-api:debug": "nest start order-api --debug --watch",
     "start:order-api:prod": "node dist/apps/order-api/main",
@@ -17,14 +17,10 @@
     "build:shopper-api": "nest build shopper-api",
     "start:shopper-api:debug": "nest start shopper-api --debug --watch",
     "start:shopper-api:prod": "node dist/apps/shopper-api/main",
-    "build:gateway-api": "nest build gateway-api",
-    "start:gateway-api:debug": "nest start gateway-api --debug --watch",
-    "start:gateway-api:prod": "node dist/apps/gateway-api/main",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
   },
   "dependencies": {
-    "@apollo/gateway": "^2.3.2",
     "@apollo/subgraph": "2.2.2",
     "@nestjs/apollo": "^10.2.0",
     "@nestjs/common": "^9.0.0",
