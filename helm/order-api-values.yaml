@@ -13,8 +13,3 @@ resources:
   requests:
     memory: 250M
     cpu: 250m
-
-service:
-  type: ClusterIP
-  port: 80
-  targetPort: 3000
