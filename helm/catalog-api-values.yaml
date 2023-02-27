@@ -1,0 +1,21 @@
+replicaCount: 1
+serviceAccountName: federated-graphql-apollo-and-hive-service-account
+
+image:
+  repository: 'federated-graphql-apollo-and-hive:latest'
+  command: '["yarn", "run", "start:catalog-api:prod"]'
+  pullPolicy: IfNotPresent
+
+resources:
+  limits:
+    memory: 250M
+    cpu: 250m
+  requests:
+    memory: 250M
+    cpu: 250m
+
+service:
+  protocol: TCP
+  type: ClusterIP
+  port: 80
+  targetPort: 3000
