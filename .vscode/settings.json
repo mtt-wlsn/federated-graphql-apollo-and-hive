@@ -9,6 +9,7 @@
     "Dataloaders",
     "nestjs",
     "opentelemetry",
-    "supergraph"
+    "supergraph",
+    "supertokens"
   ]
 }
