@@ -1,28 +1,36 @@
 {{- range .Values.Deployments }}
-{{-  $fullName := printf "%s-%s" $.Release.Name .name -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ $fullName }}
+  name: {{ .name }}
   namespace: {{ $.Release.Namespace }}
   labels:
-    app: {{ $fullName }}
+    app: {{ .name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
 spec:
   selector:
     matchLabels:
-      app: {{ $fullName }}
+      app: {{ .name }}
+      app.kubernetes.io/instance: {{ $.Release.Name }}
   replicas: {{ .replicaCount }}
   strategy:
     {{- toYaml .strategy | nindent 4 }}
   template:
     metadata:
       labels:
-        app: {{ $fullName }}
+        app: {{ .name }}
+        app.kubernetes.io/instance: {{ $.Release.Name }}
     spec:
       containers:
         {{- range .containers }}
         - name: {{ .name }}
           image: {{ .image }}
+          {{- if .ports }}  
+          ports:
+            {{- range .ports }}
+            - containerPort: {{ .containerPort }}
+            {{- end }}
+          {{- end }}
           {{- if .env }}
           env:
             {{- range .env }}
@@ -56,7 +64,7 @@ spec:
         {{- range .volumes }}
         - name: {{ .name }}
           persistentVolumeClaim:
-            claimName: {{ printf "%s-%s" $.Release.Name .persistentVolumeClaim.claimName }}
+            claimName: {{ .persistentVolumeClaim.claimName }}
         {{- end }}
       {{- end }}
 ---

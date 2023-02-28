@@ -191,3 +191,49 @@ PersistentVolumeClaims:
     resources:
       requests:
         storage: 100Mi
+
+Services:
+  - name: redis
+    appSelector: redis
+    type: ClusterIP
+    ports:
+      - name: redis
+        port: 6379
+        targetPort: 6379
+        protocol: TCP
+  - name: clickhouse
+    appSelector: clickhouse
+    type: ClusterIP
+    ports:
+      - name: clickhouse
+        port: 8123
+        targetPort: 8123
+        protocol: TCP
+  - name: zookeeper
+    appSelector: zookeeper
+    type: ClusterIP
+    ports:
+      - name: zookeeper
+        port: 2181
+        targetPort: 2181
+        protocol: TCP
+  - name: broker
+    appSelector: broker
+    type: ClusterIP
+    ports:
+      - name: broker
+        port: 9092
+        targetPort: 9092
+        protocol: TCP
+      - name: broker-29092
+        port: 29092
+        targetPort: 29092
+        protocol: TCP
+  - name: db
+    appSelector: db
+    type: ClusterIP
+    ports:
+      - name: db
+        port: 5432
+        targetPort: 5432
+        protocol: TCP

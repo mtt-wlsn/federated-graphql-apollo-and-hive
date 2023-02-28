@@ -1,12 +1,12 @@
 {{- range .Values.PersistentVolumeClaims }}
-{{-  $fullName := printf "%s-%s" $.Release.Name .name -}}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ $fullName }}
+  name: {{ .name }}
   namespace: {{ $.Release.Namespace }}
   labels:
-    app: {{ $fullName }}
+    app: {{ .name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
 spec:
   accessModes:
     {{- range .accessModes }}
