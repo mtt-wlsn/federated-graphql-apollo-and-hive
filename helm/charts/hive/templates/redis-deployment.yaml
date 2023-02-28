@@ -1,29 +1,33 @@
+{{- if .Values.redis.create -}}
+{{-  $fullName := printf "%s-%s" .Release.Name .Values.redis.name -}}
+{{-  $volumeFullName := printf "%s-%s" .Release.Name .Values.redis.persistentVolumeClaim.name -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: {{ $fullName }}
+  namespace: {{ $.Release.Namespace }}
   labels:
-    io.kompose.service: redis
-  name: redis
+    app: {{ $fullName }}
 spec:
-  replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: redis
+      app: {{ $fullName }}
+  replicas: 1
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        io.kompose.network/hive: "true"
-        io.kompose.service: redis
+        app: {{ $fullName }}
     spec:
       containers:
-        - env:
+        - name: redis
+          image: {{ $.Values.redis.image }}
+          env:
             - name: REDIS_DISABLE_COMMANDS
               value: FLUSHDB,FLUSHALL
             - name: REDIS_PASSWORD
-              value: ca871bee997a80289fcaddd948717365
-          image: bitnami/redis:7.0.8
+              value: {{ $.Values.redis.password }}
           livenessProbe:
             exec:
               command:
@@ -33,13 +37,12 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 5
             timeoutSeconds: 10
-          name: redis
-          resources: {}
           volumeMounts:
-            - mountPath: /bitnami/redis/data
-              name: redis-claim0
+            - name: {{ $volumeFullName }}
+              mountPath: /bitnami/redis/data
       restartPolicy: Always
       volumes:
-        - name: redis-claim0
+        - name: {{ $volumeFullName }}
           persistentVolumeClaim:
-            claimName: redis-claim0
+            claimName: {{ $volumeFullName }}
+{{- end }}    
