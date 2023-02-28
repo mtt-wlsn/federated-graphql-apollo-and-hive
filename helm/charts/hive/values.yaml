@@ -230,6 +230,23 @@ Deployments:
             value: ca871bee997a80289fcaddd948717365
           - name: REDIS_PORT
             value: "6379"
+  - name: webhooks
+    replicaCount: 1
+    restartPolicy: Always
+    containers:
+      - name: webhooks
+        image: "ghcr.io/kamilkisiela/graphql-hive/webhooks:latest"
+        env:
+          - name: NODE_ENV
+            value: production
+          - name: PORT
+            value: "3005"
+          - name: REDIS_HOST
+            value: redis
+          - name: REDIS_PASSWORD
+            value: ca871bee997a80289fcaddd948717365
+          - name: REDIS_PORT
+            value: "6379"
 
 PersistentVolumeClaims:
   - name: redis-claim0
@@ -331,6 +348,14 @@ Services:
       - name: tokens
         port: 3003
         targetPort: 3003
+        protocol: TCP
+  - name: webhooks
+    appSelector: webhooks
+    type: ClusterIP
+    ports:
+      - name: webhooks
+        port: 3005
+        targetPort: 3005
         protocol: TCP
 
 Jobs:
