@@ -1,3 +1,65 @@
+Deployments:
+  - name: redis
+    replicaCount: 1
+    strategy:
+      type: Recreate
+    restartPolicy: Always
+    containers:
+      - name: redis
+        image: "bitnami/redis:7.0.8"
+        env:
+          - name: REDIS_DISABLE_COMMANDS
+            value: FLUSHDB,FLUSHALL
+          - name: REDIS_PASSWORD
+            value: ca871bee997a80289fcaddd948717365
+        livenessProbe:
+          exec:
+            command:
+              - redis-cli
+              - ping
+          failureThreshold: 6
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 10
+        volumeMounts:
+          - name: redis-claim0
+            mountPath: /bitnami/redis/data
+    volumes:
+      - name: redis-claim0
+        persistentVolumeClaim:
+          claimName: redis-claim0 # Make sure you use the same claim name as in the PersistentVolumeClaim section below
+  - name: clickhouse
+    replicaCount: 1
+    strategy:
+      type: Recreate
+    restartPolicy: Always
+    containers:
+      - name: clickhouse
+        image: "clickhouse/clickhouse-server:23.1-alpine"
+        env:
+          - name: CLICKHOUSE_PASSWORD
+            value: 5d7da7ae500eb91bd394c89f4e35be19
+          - name: CLICKHOUSE_USER
+            value: clickhouse
+        livenessProbe:
+          exec:
+            command:
+              - wget
+              - --spider
+              - -q
+              - localhost:8123/ping
+          failureThreshold: 6
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 5
+        volumeMounts:
+          - name: clickhouse-claim0
+            mountPath: /var/lib/clickhouse
+    volumes:
+      - name: clickhouse-claim0
+        persistentVolumeClaim:
+          claimName: clickhouse-claim0 # Make sure you use the same claim name as in the PersistentVolumeClaim section below
+
 PersistentVolumeClaims:
   - name: redis-claim0
     accessModes:
@@ -5,11 +67,9 @@ PersistentVolumeClaims:
     resources:
       requests:
         storage: 100Mi
-
-redis:
-  create: true
-  name: redis
-  password: ca871bee997a80289fcaddd948717365
-  image: "bitnami/redis:7.0.8"
-  persistentVolumeClaim:
-    name: redis-claim0
+  - name: clickhouse-claim0
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 100Mi

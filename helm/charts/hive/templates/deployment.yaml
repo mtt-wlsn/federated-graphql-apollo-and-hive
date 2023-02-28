@@ -1,0 +1,63 @@
+{{- range .Values.Deployments }}
+{{-  $fullName := printf "%s-%s" $.Release.Name .name -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $fullName }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ $fullName }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ $fullName }}
+  replicas: {{ .replicaCount }}
+  strategy:
+    {{- toYaml .strategy | nindent 4 }}
+  template:
+    metadata:
+      labels:
+        app: {{ $fullName }}
+  spec:
+      containers:
+        {{- range .containers }}
+        - name: {{ .name }}
+          image: {{ .image }}
+          {{- if .env }}
+          env:
+            {{- range .env }}
+            - name: {{ .name }}
+              value: {{ .value }}
+            {{- end }}
+          {{- end }}
+          {{- if .livenessProbe }}
+          livenessProbe:
+            exec:
+              command:
+                {{- range .livenessProbe.exec.command }}
+                - {{ . }}
+                {{- end }}
+            failureThreshold: {{ .livenessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .livenessProbe.timeoutSeconds }}
+          {{- end }}
+          {{- if .volumeMounts }}
+          volumeMounts:
+            {{- range .volumeMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+            {{- end }}
+          {{- end }}
+        {{- end }}
+      restartPolicy: {{ .restartPolicy }}
+      {{- if .volumes }}
+      volumes:
+        {{- range .volumes }}
+        - name: {{ .name }}
+          persistentVolumeClaim:
+            claimName: {{ printf "%s-%s" $.Release.Name .persistentVolumeClaim.claimName }}
+        {{- end }}
+      {{- end }}
+---
+{{- end }}
