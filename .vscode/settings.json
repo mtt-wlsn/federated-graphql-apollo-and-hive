@@ -4,5 +4,11 @@
   "[yaml]": {
     "editor.formatOnSave": false
   },
-  "cSpell.words": ["Dataloaders", "nestjs", "opentelemetry", "supergraph"]
+  "cSpell.words": [
+    "clickhouse",
+    "Dataloaders",
+    "nestjs",
+    "opentelemetry",
+    "supergraph"
+  ]
 }

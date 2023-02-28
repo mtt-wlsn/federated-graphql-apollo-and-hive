@@ -1,0 +1,39 @@
+{{- range .Values.Jobs }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .name }}
+  namespace: {{ $.Release.Namespace }}
+spec:
+  template:
+    spec:
+      containers:
+        {{- range .containers }}
+        - name: {{ .name }}
+          image: {{ .image }}
+          {{- if .env }}
+          env:
+            {{- range .env }}
+            - name: {{ .name }}
+              value: {{ .value | quote }}
+            {{- end }}
+          {{- end }}
+          {{- if .volumeMounts }}
+          volumeMounts:
+            {{- range .volumeMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+            {{- end }}
+          {{- end }}
+        {{- end }}
+      restartPolicy: {{ .restartPolicy }}
+      {{- if .volumes }}
+      volumes:
+        {{- range .volumes }}
+        - name: {{ .name }}
+          persistentVolumeClaim:
+            claimName: {{ .persistentVolumeClaim.claimName }}
+        {{- end }}
+      {{- end }}
+---
+{{- end }}

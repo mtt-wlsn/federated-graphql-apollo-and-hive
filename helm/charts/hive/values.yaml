@@ -142,16 +142,16 @@ Deployments:
           - name: POSTGRES_DB
             value: registry
           - name: POSTGRES_PASSWORD
-            value: 5d7da7ae500eb91bd394c89f4e35be19
+            value: 4370153fbf43d40c1f9ea610e1913782
           - name: POSTGRES_USER
             value: postgres
-        livenessProbe:
-          exec:
-            command:
-              - pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}
-          failureThreshold: 6
-          periodSeconds: 5
-          timeoutSeconds: 5
+        # livenessProbe:
+        #   exec:
+        #     command:
+        #       - pg_isready -d registry -U postgres
+        #   failureThreshold: 6
+        #   periodSeconds: 5
+        #   timeoutSeconds: 5
         volumeMounts:
           - name: db-claim0
             mountPath: /var/lib/postgresql/data
@@ -237,3 +237,44 @@ Services:
         port: 5432
         targetPort: 5432
         protocol: TCP
+
+Jobs:
+  - name: migrations
+    restartPolicy: OnFailure
+    containers:
+      - name: migrations
+        image: "ghcr.io/kamilkisiela/graphql-hive/storage:latest"
+        env:
+          - name: CLICKHOUSE_HOST
+            value: clickhouse
+          - name: CLICKHOUSE_MIGRATOR
+            value: up
+          - name: CLICKHOUSE_PASSWORD
+            value: 5d7da7ae500eb91bd394c89f4e35be19
+          - name: CLICKHOUSE_PORT
+            value: "8123"
+          - name: CLICKHOUSE_PROTOCOL
+            value: http
+          - name: CLICKHOUSE_USERNAME
+            value: clickhouse
+          - name: MIGRATOR
+            value: up
+          - name: POSTGRES_DB
+            value: registry
+          - name: POSTGRES_HOST
+            value: db
+          - name: POSTGRES_PASSWORD
+            value: 4370153fbf43d40c1f9ea610e1913782
+          - name: POSTGRES_PORT
+            value: "5432"
+          - name: POSTGRES_USER
+            value: postgres
+          - name: TS_NODE_TRANSPILE_ONLY
+            value: "true"
+        volumeMounts:
+          - name: db-claim0
+            mountPath: /var/lib/postgresql/data
+    volumes:
+      - name: db-claim0
+        persistentVolumeClaim:
+          claimName: db-claim0
