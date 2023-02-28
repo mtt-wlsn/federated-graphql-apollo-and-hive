@@ -1,0 +1,19 @@
+{{- range .Values.PersistentVolumeClaims }}
+{{-  $fullName := printf "%s-%s" $.Release.Name .name -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $fullName }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ $fullName }}
+spec:
+  accessModes:
+    {{- range .accessModes }}
+    - {{ . }}
+    {{- end }}
+  resources:
+    requests:
+      storage: {{ .resources.requests.storage }}
+---
+{{- end }}
