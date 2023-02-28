@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: clickhouse
+  name: clickhouse
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: clickhouse
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        io.kompose.network/hive: "true"
+        io.kompose.service: clickhouse
+    spec:
+      containers:
+        - env:
+            - name: CLICKHOUSE_PASSWORD
+              value: 5d7da7ae500eb91bd394c89f4e35be19
+            - name: CLICKHOUSE_USER
+              value: clickhouse
+          image: clickhouse/clickhouse-server:23.1-alpine
+          livenessProbe:
+            exec:
+              command:
+                - wget
+                - --spider
+                - -q
+                - localhost:8123/ping
+            failureThreshold: 6
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 5
+          name: clickhouse
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/lib/clickhouse
+              name: clickhouse-claim0
+      restartPolicy: Always
+      volumes:
+        - name: clickhouse-claim0
+          persistentVolumeClaim:
+            claimName: clickhouse-claim0
