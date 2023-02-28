@@ -89,7 +89,7 @@ Deployments:
         image: "confluentinc/cp-kafka:7.3.1"
         env:
           - name: KAFKA_ADVERTISED_LISTENERS
-            value: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
+            value: "PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092"
           - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE
             value: "true"
           - name: KAFKA_BROKER_ID
@@ -97,7 +97,7 @@ Deployments:
           - name: KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS
             value: "0"
           - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
-            value: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+            value: "PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT"
           - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
             value: "1"
           - name: KAFKA_TRANSACTION_STATE_LOG_MIN_ISR
@@ -105,7 +105,7 @@ Deployments:
           - name: KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
             value: "1"
           - name: KAFKA_ZOOKEEPER_CONNECT
-            value: zookeeper:2181
+            value: "zookeeper:2181"
         livenessProbe:
           exec:
             command:
@@ -191,4 +191,3 @@ PersistentVolumeClaims:
     resources:
       requests:
         storage: 100Mi
-  

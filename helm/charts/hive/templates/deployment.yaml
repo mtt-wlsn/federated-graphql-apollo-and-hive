@@ -27,7 +27,7 @@ spec:
           env:
             {{- range .env }}
             - name: {{ .name }}
-              value: {{ .value }}
+              value: {{ .value | quote }}
             {{- end }}
           {{- end }}
           {{- if .livenessProbe }}
@@ -35,7 +35,7 @@ spec:
             exec:
               command:
                 {{- range .livenessProbe.exec.command }}
-                - {{ . }}
+                - {{ . | quote }}
                 {{- end }}
             failureThreshold: {{ .livenessProbe.failureThreshold }}
             initialDelaySeconds: {{ .livenessProbe.initialDelaySeconds }}
