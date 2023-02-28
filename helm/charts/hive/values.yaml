@@ -58,7 +58,27 @@ Deployments:
     volumes:
       - name: clickhouse-claim0
         persistentVolumeClaim:
-          claimName: clickhouse-claim0 # Make sure you use the same claim name as in the PersistentVolumeClaim section below
+          claimName: clickhouse-claim0
+  - name: zookeeper
+    replicaCount: 1
+    strategy:
+      type: Recreate
+    restartPolicy: Always
+    containers:
+      - name: zookeeper
+        image: "confluentinc/cp-zookeeper:7.3.1"
+        env:
+          - name: ZOOKEEPER_CLIENT_PORT
+            value: "2181"
+          - name: ZOOKEEPER_TICK_TIME
+            value: "2000"
+        volumeMounts:
+          - name: zookeeper-claim0
+            mountPath: /var/lib/zookeeper/data
+    volumes:
+      - name: zookeeper-claim0
+        persistentVolumeClaim:
+          claimName: zookeeper-claim0
 
 PersistentVolumeClaims:
   - name: redis-claim0
@@ -68,6 +88,12 @@ PersistentVolumeClaims:
       requests:
         storage: 100Mi
   - name: clickhouse-claim0
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 100Mi
+  - name: zookeeper-claim0
     accessModes:
       - ReadWriteOnce
     resources:
