@@ -1,0 +1,7 @@
+redis:
+  create: true
+  name: redis
+  password: ca871bee997a80289fcaddd948717365
+  image: "bitnami/redis:7.0.8"
+  persistentVolumeClaim:
+    name: redis-claim0
