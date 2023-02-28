@@ -159,6 +159,27 @@ Deployments:
       - name: db-claim0
         persistentVolumeClaim:
           claimName: db-claim0
+  - name: emails
+    replicaCount: 1
+    restartPolicy: Always
+    containers:
+      - name: emails
+        image: "ghcr.io/kamilkisiela/graphql-hive/emails:latest"
+        env:
+          - name: EMAIL_FROM
+            value: no-reply@graphql-hive.com
+          - name: EMAIL_PROVIDER
+            value: sendmail
+          - name: NODE_ENV
+            value: production
+          - name: PORT
+            value: "3011"
+          - name: REDIS_HOST
+            value: redis
+          - name: REDIS_PASSWORD
+            value: ca871bee997a80289fcaddd948717365
+          - name: REDIS_PORT
+            value: "6379"
 
 PersistentVolumeClaims:
   - name: redis-claim0
@@ -236,6 +257,14 @@ Services:
       - name: db
         port: 5432
         targetPort: 5432
+        protocol: TCP
+  - name: emails
+    appSelector: emails
+    type: ClusterIP
+    ports:
+      - name: emails
+        port: 3011
+        targetPort: 3011
         protocol: TCP
 
 Jobs:
