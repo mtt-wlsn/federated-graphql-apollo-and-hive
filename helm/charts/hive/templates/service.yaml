@@ -12,7 +12,12 @@ spec:
   ports:
     {{- range .ports }}
     - name: {{ .name }}
+      {{- if .nodePort }}
+      nodePort: {{ .nodePort }}
+      {{- end }}
+      {{- if .port }}
       port: {{ .port }}
+      {{- end }}
       targetPort: {{ .targetPort }}
       protocol: {{ .protocol }}
     {{- end }}
