@@ -180,29 +180,31 @@ Deployments:
             value: ca871bee997a80289fcaddd948717365
           - name: REDIS_PORT
             value: "6379"
-  # - name: supertokens
-  #   replicaCount: 1
-  #   restartPolicy: Always
-  #   containers:
-  #     - name: supertokens
-  #       image: "registry.supertokens.io/supertokens/supertokens-postgresql:4.3"
-  #       env:
-  #         - name: ACCESS_TOKEN_BLACKLISTING
-  #           value: "true"
-  #         - name: API_KEYS
-  #           value: cc42faf32cd1fd098c19cabf2e57e384
-  #         - name: POSTGRESQL_DATABASE_NAME
-  #           value: registry
-  #         - name: POSTGRESQL_HOST
-  #           value: db
-  #         - name: POSTGRESQL_PASSWORD
-  #           value: 4370153fbf43d40c1f9ea610e1913782
-  #         - name: POSTGRESQL_PORT
-  #           value: "5432"
-  #         - name: POSTGRESQL_TABLE_NAMES_PREFIX
-  #           value: supertokens
-  #         - name: POSTGRESQL_USER
-  #           value: postgres
+  - name: supertokens
+    replicaCount: 1
+    restartPolicy: Always
+    containers:
+      - name: supertokens
+        image: "registry.supertokens.io/supertokens/supertokens-postgresql:4.3"
+        env:
+          - name: "ACCESS_TOKEN_BLACKLISTING"
+            value: "true"
+          - name: "API_KEYS"
+            value: cc42faf32cd1fd098c19cabf2e57e384
+          - name: "POSTGRESQL_DATABASE_NAME"
+            value: registry
+          - name: "POSTGRESQL_HOST"
+            value: db
+          - name: "POSTGRESQL_PASSWORD"
+            value: 4370153fbf43d40c1f9ea610e1913782
+          - name: "POSTGRESQL_PORT"
+            value: "5432"
+          - name: "POSTGRESQL_TABLE_SCHEMA"
+            value: supertokens
+          - name: "POSTGRESQL_USER"
+            value: postgres
+          - name: "SUPERTOKENS_PORT"
+            value: "3567"
   - name: tokens
     replicaCount: 1
     restartPolicy: Always
@@ -377,7 +379,6 @@ Deployments:
           - --change-host-header
         ports:
           - containerPort: 8083
-
 
 PersistentVolumeClaims:
   - name: redis-claim0
