@@ -11,6 +11,15 @@ spec:
         {{- range .containers }}
         - name: {{ .name }}
           image: {{ .image }}
+          {{- if .commands }}
+          command: {{ .commands }}
+          {{- end }}
+          {{- if .args }}
+          args:
+            {{- range .args }}
+            {{ . }}
+            {{- end }}
+          {{- end }}
           {{- if .env }}
           env:
             {{- range .env }}

@@ -180,29 +180,29 @@ Deployments:
             value: ca871bee997a80289fcaddd948717365
           - name: REDIS_PORT
             value: "6379"
-  - name: supertokens
-    replicaCount: 1
-    restartPolicy: Always
-    containers:
-      - name: supertokens
-        image: "registry.supertokens.io/supertokens/supertokens-postgresql:4.3"
-        env:
-          - name: ACCESS_TOKEN_BLACKLISTING
-            value: "true"
-          - name: API_KEYS
-            value: cc42faf32cd1fd098c19cabf2e57e384
-          - name: POSTGRESQL_DATABASE_NAME
-            value: registry
-          - name: POSTGRESQL_HOST
-            value: db
-          - name: POSTGRESQL_PASSWORD
-            value: 4370153fbf43d40c1f9ea610e1913782
-          - name: POSTGRESQL_PORT
-            value: "5432"
-          - name: POSTGRESQL_TABLE_NAMES_PREFIX
-            value: supertokens
-          - name: POSTGRESQL_USER
-            value: postgres
+  # - name: supertokens
+  #   replicaCount: 1
+  #   restartPolicy: Always
+  #   containers:
+  #     - name: supertokens
+  #       image: "registry.supertokens.io/supertokens/supertokens-postgresql:4.3"
+  #       env:
+  #         - name: ACCESS_TOKEN_BLACKLISTING
+  #           value: "true"
+  #         - name: API_KEYS
+  #           value: cc42faf32cd1fd098c19cabf2e57e384
+  #         - name: POSTGRESQL_DATABASE_NAME
+  #           value: registry
+  #         - name: POSTGRESQL_HOST
+  #           value: db
+  #         - name: POSTGRESQL_PASSWORD
+  #           value: 4370153fbf43d40c1f9ea610e1913782
+  #         - name: POSTGRESQL_PORT
+  #           value: "5432"
+  #         - name: POSTGRESQL_TABLE_NAMES_PREFIX
+  #           value: supertokens
+  #         - name: POSTGRESQL_USER
+  #           value: postgres
   - name: tokens
     replicaCount: 1
     restartPolicy: Always
@@ -324,6 +324,59 @@ Deployments:
             value: ca871bee997a80289fcaddd948717365
           - name: REDIS_PORT
             value: "6379"
+  - name: s3
+    replicaCount: 1
+    strategy:
+      type: Recreate
+    restartPolicy: Always
+    containers:
+      - name: s3
+        image: "quay.io/minio/minio:RELEASE.2022-11-29T23-40-49Z"
+        args:
+          - server
+          - /data
+          - --console-address
+          - :9001
+        ports:
+          - containerPort: 9000
+          - containerPort: 9001
+        env:
+          - name: MINIO_ROOT_PASSWORD
+            value: minioadmin
+          - name: MINIO_ROOT_USER
+            value: minioadmin
+        livenessProbe:
+          exec:
+            command:
+              - curl
+              - -f
+              - http://localhost:9000/minio/health/live
+          failureThreshold: 3
+          periodSeconds: 30
+          timeoutSeconds: 20
+        volumeMounts:
+          - name: s3-claim0
+            mountPath: /data
+    volumes:
+      - name: s3-claim0
+        persistentVolumeClaim:
+          claimName: s3-claim0
+  - name: s3-reverse-proxy
+    replicaCount: 1
+    restartPolicy: Always
+    containers:
+      - name: s3-reverse-proxy
+        image: "caddy:2.6.4-alpine"
+        args:
+          - caddy
+          - reverse-proxy
+          - --from
+          - :8083
+          - --to
+          - s3:9000
+          - --change-host-header
+        ports:
+          - containerPort: 8083
 
 
 PersistentVolumeClaims:
@@ -352,6 +405,12 @@ PersistentVolumeClaims:
       requests:
         storage: 100Mi
   - name: db-claim0
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 100Mi
+  - name: s3-claim0
     accessModes:
       - ReadWriteOnce
     resources:
@@ -451,6 +510,26 @@ Services:
         port: 3002
         targetPort: 3002
         protocol: TCP
+  - name: s3
+    appSelector: s3
+    type: ClusterIP
+    ports:
+      - name: s3
+        port: 9000
+        targetPort: 9000
+        protocol: TCP
+      - name: s3-console
+        port: 9001
+        targetPort: 9001
+        protocol: TCP
+  - name: s3-reverse-proxy
+    appSelector: s3-reverse-proxy
+    type: ClusterIP
+    ports:
+      - name: s3-reverse-proxy
+        port: 8083
+        targetPort: 8083
+        protocol: TCP
 
 Jobs:
   - name: migrations
@@ -492,3 +571,13 @@ Jobs:
       - name: db-claim0
         persistentVolumeClaim:
           claimName: db-claim0
+  - name: s3-provision-buckets
+    restartPolicy: OnFailure
+    containers:
+      - name: s3-provision-buckets
+        image: "quay.io/minio/mc:RELEASE.2022-11-17T21-20-39Z"
+        commands: ['"/bin/sh"']
+        args:
+          - '- -c'
+          - '- >-'
+          - ' /usr/bin/mc alias set myminio http://s3:9000 minioadmin minioadmin; /usr/bin/mc ls myminio/artifacts >/dev/null 2>&1 || /usr/bin/mc mb myminio/artifacts; exit 0'
