@@ -305,6 +305,26 @@ Deployments:
             value: production
           - name: PORT
             value: "3007"
+  - name: schema
+    replicaCount: 1
+    restartPolicy: Always
+    containers:
+      - name: schema
+        image: "ghcr.io/kamilkisiela/graphql-hive/schema:latest"
+        env:
+          - name: ENCRYPTION_SECRET
+            value: fbfb73539b5711462f8dc93b08be8f83
+          - name: NODE_ENV
+            value: production
+          - name: PORT
+            value: "3002"
+          - name: REDIS_HOST
+            value: redis
+          - name: REDIS_PASSWORD
+            value: ca871bee997a80289fcaddd948717365
+          - name: REDIS_PORT
+            value: "6379"
+
 
 PersistentVolumeClaims:
   - name: redis-claim0
@@ -422,6 +442,14 @@ Services:
       - name: usage
         port: 8081
         targetPort: 3006
+        protocol: TCP
+  - name: schema
+    appSelector: schema
+    type: ClusterIP
+    ports:
+      - name: schema
+        port: 3002
+        targetPort: 3002
         protocol: TCP
 
 Jobs:
