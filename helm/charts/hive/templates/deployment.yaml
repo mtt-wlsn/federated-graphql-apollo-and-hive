@@ -25,6 +25,9 @@ spec:
         {{- range .containers }}
         - name: {{ .name }}
           image: {{ .image }}
+          {{- if .imagePullPolicy }}
+          imagePullPolicy: {{ .imagePullPolicy }}
+          {{- end }}
           {{- if .commands }}
           command:
             {{- range .commands }}

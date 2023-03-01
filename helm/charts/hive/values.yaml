@@ -7,6 +7,7 @@ Deployments:
     containers:
       - name: redis
         image: "bitnami/redis:7.0.8"
+        imagePullPolicy: IfNotPresent
         env:
           - name: REDIS_DISABLE_COMMANDS
             value: FLUSHDB,FLUSHALL
@@ -36,6 +37,7 @@ Deployments:
     containers:
       - name: clickhouse
         image: "clickhouse/clickhouse-server:23.1-alpine"
+        imagePullPolicy: IfNotPresent
         env:
           - name: CLICKHOUSE_PASSWORD
             value: 5d7da7ae500eb91bd394c89f4e35be19
@@ -67,6 +69,7 @@ Deployments:
     containers:
       - name: zookeeper
         image: "confluentinc/cp-zookeeper:7.3.1"
+        imagePullPolicy: IfNotPresent
         env:
           - name: ZOOKEEPER_CLIENT_PORT
             value: "2181"
@@ -87,6 +90,7 @@ Deployments:
     containers:
       - name: broker
         image: "confluentinc/cp-kafka:7.3.1"
+        imagePullPolicy: IfNotPresent
         env:
           - name: KAFKA_ADVERTISED_LISTENERS
             value: "PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092"
@@ -136,6 +140,7 @@ Deployments:
     containers:
       - name: db
         image: "postgres:13.4"
+        imagePullPolicy: IfNotPresent
         env:
           - name: PGDATA
             value: /var/lib/postgresql/data
@@ -164,7 +169,8 @@ Deployments:
     restartPolicy: Always
     containers:
       - name: emails
-        image: "ghcr.io/kamilkisiela/graphql-hive/emails:latest"
+        image: "ghcr.io/kamilkisiela/graphql-hive/emails:5e62d45f046bd895a8f88ed7f0116562dd9a1b84"
+        imagePullPolicy: IfNotPresent
         env:
           - name: EMAIL_FROM
             value: no-reply@graphql-hive.com
@@ -186,6 +192,7 @@ Deployments:
     containers:
       - name: supertokens
         image: "registry.supertokens.io/supertokens/supertokens-postgresql:4.3"
+        imagePullPolicy: IfNotPresent
         env:
           - name: "ACCESS_TOKEN_BLACKLISTING"
             value: "true"
@@ -210,7 +217,8 @@ Deployments:
     restartPolicy: Always
     containers:
       - name: tokens
-        image: "ghcr.io/kamilkisiela/graphql-hive/tokens:latest"
+        image: "ghcr.io/kamilkisiela/graphql-hive/tokens:5e62d45f046bd895a8f88ed7f0116562dd9a1b84"
+        imagePullPolicy: IfNotPresent
         env:
           - name: NODE_ENV
             value: production
@@ -237,7 +245,8 @@ Deployments:
     restartPolicy: Always
     containers:
       - name: webhooks
-        image: "ghcr.io/kamilkisiela/graphql-hive/webhooks:latest"
+        image: "ghcr.io/kamilkisiela/graphql-hive/webhooks:5e62d45f046bd895a8f88ed7f0116562dd9a1b84"
+        imagePullPolicy: IfNotPresent
         env:
           - name: NODE_ENV
             value: production
@@ -254,7 +263,8 @@ Deployments:
     restartPolicy: Always
     containers:
       - name: usage
-        image: "ghcr.io/kamilkisiela/graphql-hive/usage:latest"
+        image: "ghcr.io/kamilkisiela/graphql-hive/usage:5e62d45f046bd895a8f88ed7f0116562dd9a1b84"
+        imagePullPolicy: IfNotPresent
         ports:
           - containerPort: 3006
         env:
@@ -281,7 +291,8 @@ Deployments:
     restartPolicy: Always
     containers:
       - name: usage-ingestor
-        image: "ghcr.io/kamilkisiela/graphql-hive/usage-ingestor:latest"
+        image: "ghcr.io/kamilkisiela/graphql-hive/usage-ingestor:5e62d45f046bd895a8f88ed7f0116562dd9a1b84"
+        imagePullPolicy: IfNotPresent
         env:
           - name: CLICKHOUSE_HOST
             value: clickhouse
@@ -312,7 +323,8 @@ Deployments:
     restartPolicy: Always
     containers:
       - name: schema
-        image: "ghcr.io/kamilkisiela/graphql-hive/schema:latest"
+        image: "ghcr.io/kamilkisiela/graphql-hive/schema:5e62d45f046bd895a8f88ed7f0116562dd9a1b84"
+        imagePullPolicy: IfNotPresent
         env:
           - name: ENCRYPTION_SECRET
             value: fbfb73539b5711462f8dc93b08be8f83
@@ -334,6 +346,7 @@ Deployments:
     containers:
       - name: s3
         image: "quay.io/minio/minio:RELEASE.2022-11-29T23-40-49Z"
+        imagePullPolicy: IfNotPresent
         args:
           - server
           - /data
@@ -369,6 +382,7 @@ Deployments:
     containers:
       - name: s3-reverse-proxy
         image: "caddy:2.6.4-alpine"
+        imagePullPolicy: IfNotPresent
         args:
           - caddy
           - reverse-proxy
@@ -384,7 +398,8 @@ Deployments:
     restartPolicy: Always
     containers:
       - name: server
-        image: "ghcr.io/kamilkisiela/graphql-hive/server:latest"
+        image: "ghcr.io/kamilkisiela/graphql-hive/server:5e62d45f046bd895a8f88ed7f0116562dd9a1b84"
+        imagePullPolicy: IfNotPresent
         ports:
           - containerPort: 3001
         env:
@@ -393,7 +408,7 @@ Deployments:
           - name: CDN_API
             value: "1"
           - name: CDN_API_BASE_URL
-            value: http://localhost:8082
+            value: http://localhost:30082
           - name: CDN_AUTH_PRIVATE_KEY
             value: b2f380083af6d1052c7c9dc36aab90ea
           - name: CLICKHOUSE_HOST
@@ -437,7 +452,7 @@ Deployments:
           - name: S3_ENDPOINT
             value: http://s3:9000
           - name: S3_PUBLIC_URL
-            value: http://localhost:8083
+            value: http://localhost:30083
           - name: S3_SECRET_ACCESS_KEY
             value: minioadmin
           - name: SCHEMA_ENDPOINT
@@ -451,18 +466,19 @@ Deployments:
           - name: WEBHOOKS_ENDPOINT
             value: http://webhooks:3005
           - name: WEB_APP_URL
-            value: http://localhost:30001
+            value: http://localhost:30080
   - name: app
     replicaCount: 1
     restartPolicy: Always
     containers:
       - name: app
-        image: "ghcr.io/kamilkisiela/graphql-hive/app:latest"
+        image: "ghcr.io/kamilkisiela/graphql-hive/app:5e62d45f046bd895a8f88ed7f0116562dd9a1b84"
+        imagePullPolicy: IfNotPresent
         ports:
           - containerPort: 3000
         env:
           - name: APP_BASE_URL
-            value: http://localhost:30001
+            value: http://localhost:30080
           - name: AUTH_ORGANIZATION_OIDC
             value: "1"
           - name: AUTH_REQUIRE_EMAIL_VERIFICATION
@@ -481,7 +497,6 @@ Deployments:
             value: cc42faf32cd1fd098c19cabf2e57e384
           - name: SUPERTOKENS_CONNECTION_URI
             value: http://supertokens:3567
-        
 
 PersistentVolumeClaims:
   - name: redis-claim0
@@ -600,10 +615,11 @@ Services:
         protocol: TCP
   - name: usage
     appSelector: usage
-    type: ClusterIP
+    type: NodePort
     ports:
       - name: usage
         port: 8081
+        nodePort: 30081
         targetPort: 3006
         protocol: TCP
   - name: schema
@@ -628,18 +644,20 @@ Services:
         protocol: TCP
   - name: s3-reverse-proxy
     appSelector: s3-reverse-proxy
-    type: ClusterIP
+    type: NodePort
     ports:
       - name: s3-reverse-proxy
         port: 8083
+        nodePort: 30083
         targetPort: 8083
         protocol: TCP
   - name: server
     appSelector: server
-    type: ClusterIP
+    type: NodePort
     ports:
       - name: server
         port: 3001
+        nodePort: 30082
         targetPort: 3001
         protocol: TCP
   - name: app
@@ -648,7 +666,7 @@ Services:
     ports:
       - name: app
         port: 8080
-        nodePort: 30001
+        nodePort: 30080
         targetPort: 3000
         protocol: TCP
 
@@ -657,7 +675,7 @@ Jobs:
     restartPolicy: OnFailure
     containers:
       - name: migrations
-        image: "ghcr.io/kamilkisiela/graphql-hive/storage:latest"
+        image: "ghcr.io/kamilkisiela/graphql-hive/storage:5e62d45f046bd895a8f88ed7f0116562dd9a1b84"
         env:
           - name: CLICKHOUSE_HOST
             value: clickhouse
