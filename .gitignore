@@ -37,3 +37,7 @@ lerna-debug.log*
 .yarn
 
 .env
+
+# hive
+.hive
+hive.json

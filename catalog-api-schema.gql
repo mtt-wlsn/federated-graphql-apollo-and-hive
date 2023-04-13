@@ -1,0 +1,59 @@
+extend schema
+  @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable", "@external", "@override", "@requires", "@tag", "@inaccessible", "@extends", "@provides"])
+
+type Product {
+  """Identifier"""
+  id: ID!
+
+  """Order identifier"""
+  orderId: ID!
+
+  """Name"""
+  name: String
+
+  """Description"""
+  description: String
+}
+
+type Order
+  @key(fields: "id")
+{
+  id: ID!
+  products: [Product!]!
+}
+
+type Query {
+  products: [Product!]!
+  product(id: String!): Product!
+}
+
+type Mutation {
+  createProduct(createProductInput: CreateProductInput!): Product!
+  updateProduct(updateProductInput: UpdateProductInput!): Product!
+  removeProduct(id: String!): Product!
+}
+
+input CreateProductInput {
+  """Order identifier"""
+  orderId: ID!
+
+  """Name"""
+  name: String
+
+  """Description"""
+  description: String
+}
+
+input UpdateProductInput {
+  """Order identifier"""
+  orderId: ID
+
+  """Name"""
+  name: String
+
+  """Description"""
+  description: String
+
+  """Identifier"""
+  id: ID!
+}

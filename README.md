@@ -36,3 +36,7 @@ helm upgrade --install {subgraph-name} ./helm/charts/subgraph --create-namespace
 helm install --debug --dry-run {subgraph-name} ./helm/charts/subgraph --create-namespace --namespace federated-graphql-apollo-and-hive-demo --values ./helm/{subgraph-name}-values.yaml
 
 ```
+
+helm install --debug --dry-run hiveeee ./helm/charts/hive --create-namespace --namespace pizzzzzzzza
+
+helm upgrade --install hive ./helm/charts/hive --create-namespace --namespace hivetestrun

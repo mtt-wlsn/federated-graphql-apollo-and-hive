@@ -1,0 +1,22 @@
+supergraph:
+  listen: 0.0.0.0:4000
+plugins:
+  hive.usage:
+    {}
+    #  Sample rate to determine sampling.
+    #  0.0 = 0% chance of being sent
+    #  1.0 = 100% chance of being sent.
+    #  Default: 1.0
+    # sample_rate: "0.5",
+    #
+    #  A list of operations (by name) to be ignored by Hive.
+    # exclude: ["IntrospectionQuery", "MeQuery"],
+    #
+    #  Uses graphql-client-name by default
+    # client_name_header: "x-client-name",
+    #  Uses graphql-client-version by default
+    # client_version_header: "x-client-version",
+    #
+    #  A maximum number of operations to hold in a buffer before sending to GraphQL Hive
+    #  Default: 1000
+    # buffer_size: 1000

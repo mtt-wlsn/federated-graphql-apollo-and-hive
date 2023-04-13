@@ -497,6 +497,31 @@ Deployments:
             value: cc42faf32cd1fd098c19cabf2e57e384
           - name: SUPERTOKENS_CONNECTION_URI
             value: http://supertokens:3567
+  - name: composition-federation-2
+    replicaCount: 1
+    restartPolicy: Always
+    containers:
+      - name: composition-federation-2
+        image: "ghcr.io/kamilkisiela/graphql-hive/composition-federation-2:b8987b1d0dfba720a498d06cee266d948453c2a4"
+        imagePullPolicy: IfNotPresent
+        ports:
+          - containerPort: 3069
+        env:
+          - name: PORT
+            value: "3069"
+          - name: SECRET
+            value: pizza
+        livenessProbe:
+          exec:
+            command:
+              - wget
+              - --spider
+              - -q
+              - localhost:3069/_readiness
+            failureThreshold: 6
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 5
 
 PersistentVolumeClaims:
   - name: redis-claim0
@@ -668,6 +693,14 @@ Services:
         port: 8080
         nodePort: 30080
         targetPort: 3000
+        protocol: TCP
+  - name: composition-federation-2
+    appSelector: composition-federation-2
+    type: ClusterIP
+    ports:
+      - name: composition-federation-2
+        port: 3069
+        targetPort: 3069
         protocol: TCP
 
 Jobs:

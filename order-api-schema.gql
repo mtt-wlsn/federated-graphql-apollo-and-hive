@@ -1,0 +1,60 @@
+extend schema
+  @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable", "@external", "@override", "@requires", "@tag", "@inaccessible", "@extends", "@provides"])
+
+type Order
+  @key(fields: "id")
+{
+  """Identifier"""
+  id: ID!
+
+  """Id of the Shopper placing the order."""
+  shopperId: ID
+
+  """The amount of products being purchased."""
+  quantity: Float
+
+  """The total amount the shopper will be charged for the order."""
+  totalPrice: Float
+}
+
+type Query {
+  orders: [Order!]!
+  order(id: String!): Order!
+}
+
+type Mutation {
+  createOrder(createOrderInput: CreateOrderInput!): Order!
+  updateOrder(updateOrderInput: UpdateOrderInput!): Order!
+  removeOrder(id: String!): Order!
+}
+
+input CreateOrderInput {
+  """Id of the Shopper purchasing the order."""
+  shopperId: String
+
+  """Id of the product being purchased."""
+  productId: String
+
+  """The amount of products being purchased."""
+  quantity: Float
+
+  """The total amount the shopper will be charged for the order."""
+  totalPrice: Float
+}
+
+input UpdateOrderInput {
+  """Id of the Shopper purchasing the order."""
+  shopperId: String
+
+  """Id of the product being purchased."""
+  productId: String
+
+  """The amount of products being purchased."""
+  quantity: Float
+
+  """The total amount the shopper will be charged for the order."""
+  totalPrice: Float
+
+  """Identifier"""
+  id: ID!
+}

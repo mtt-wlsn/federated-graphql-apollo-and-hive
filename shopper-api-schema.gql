@@ -1,0 +1,198 @@
+extend schema
+  @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable", "@external", "@override", "@requires", "@tag", "@inaccessible", "@extends", "@provides"])
+
+type Address {
+  """Address identifier"""
+  id: ID!
+
+  """Shopper identifier"""
+  shopperId: ID
+
+  """Address Line 1"""
+  addressLine1: String
+
+  """Address Line 2"""
+  addressLine2: String
+
+  """City"""
+  city: String
+
+  """State"""
+  state: String
+
+  """Postal Code"""
+  postalCode: String
+}
+
+type Employer {
+  """Employer Identifier"""
+  id: ID!
+
+  """Legal Name"""
+  legalName: String
+
+  """Doing Business As (DBA) Name"""
+  dbaName: String
+
+  """Number of years the company has been in business"""
+  yearsInBusiness: Int
+
+  """Headquarters address identifier"""
+  headquarterAddressId: ID
+
+  """Headquarters address"""
+  headquarterAddress: Address
+}
+
+type Shopper {
+  """Shopper identifier"""
+  id: ID!
+
+  """First Name"""
+  firstName: String
+
+  """Last Name"""
+  lastName: String
+
+  """Date of Birth"""
+  dateOfBirth: DateTime
+
+  """Associated Addresses"""
+  associatedAddresses: [Address!]
+
+  """Shoppers employer identifier"""
+  employerId: ID
+
+  """Shoppers employer"""
+  employer: Employer
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Order
+  @key(fields: "id")
+{
+  """Identifier"""
+  id: ID!
+  shopperId: ID @external
+  shopper: Shopper @requires(fields: "shopperId")
+}
+
+type Query {
+  shoppers: [Shopper!]!
+  shopper(id: String!): Shopper!
+  addresses: [Address!]!
+  address(id: String!): Address!
+  employers: [Employer!]!
+  employer(id: String!): Employer!
+}
+
+type Mutation {
+  createShopper(createShopperInput: CreateShopperInput!): Shopper!
+  updateShopper(updateShopperInput: UpdateShopperInput!): Shopper!
+  removeShopper(id: String!): Shopper!
+  createAddress(createAddressInput: CreateAddressInput!): Address!
+  updateAddress(updateAddressInput: UpdateAddressInput!): Address!
+  removeAddress(id: String!): Address!
+  createEmployer(createEmployerInput: CreateEmployerInput!): Employer!
+  updateEmployer(updateEmployerInput: UpdateEmployerInput!): Employer!
+  removeEmployer(id: String!): Employer!
+}
+
+input CreateShopperInput {
+  """First Name"""
+  firstName: String
+
+  """Last Name"""
+  lastName: String
+
+  """Date of Birth"""
+  dateOfBirth: DateTime
+}
+
+input UpdateShopperInput {
+  """First Name"""
+  firstName: String
+
+  """Last Name"""
+  lastName: String
+
+  """Date of Birth"""
+  dateOfBirth: DateTime
+
+  """Shopper identifier"""
+  id: ID!
+}
+
+input CreateAddressInput {
+  """Shopper identifier"""
+  shopperId: ID!
+
+  """Address Line 1"""
+  addressLine1: String
+
+  """Address Line 2"""
+  addressLine2: String
+
+  """City"""
+  city: String
+
+  """State"""
+  state: String
+
+  """Postal Code"""
+  postalCode: String
+}
+
+input UpdateAddressInput {
+  """Shopper identifier"""
+  shopperId: ID
+
+  """Address Line 1"""
+  addressLine1: String
+
+  """Address Line 2"""
+  addressLine2: String
+
+  """City"""
+  city: String
+
+  """State"""
+  state: String
+
+  """Postal Code"""
+  postalCode: String
+  id: ID!
+}
+
+input CreateEmployerInput {
+  """Legal Name"""
+  legalName: String
+
+  """Doing Business As (DBA) Name"""
+  dbaName: String
+
+  """Number of years the company has been in business."""
+  yearsInBusiness: Int
+
+  """Headquarters address identifier"""
+  headquarterAddressId: ID
+}
+
+input UpdateEmployerInput {
+  """Legal Name"""
+  legalName: String
+
+  """Doing Business As (DBA) Name"""
+  dbaName: String
+
+  """Number of years the company has been in business."""
+  yearsInBusiness: Int
+
+  """Headquarters address identifier"""
+  headquarterAddressId: ID
+  id: ID!
+}
